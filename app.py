@@ -6,7 +6,7 @@ import threading
 app = Flask(__name__)
 
 # Sabit ping aralığı (30 saniye)
-PING_INTERVAL = 30
+PING_INTERVAL = 31
 
 # Ping fonksiyonu
 def ping_site(url):
