@@ -1,12 +1,15 @@
-from flask import Flask, render_template, request
+from flask import Flask
 import requests
 import time
 import threading
 
 app = Flask(__name__)
 
+# Sabit ping aralığı (30 saniye)
+PING_INTERVAL = 30
 
-def ping_site(url, interval):
+# Ping fonksiyonu
+def ping_site(url):
     while True:
         try:
             response = requests.get(url)
@@ -14,22 +17,18 @@ def ping_site(url, interval):
         except requests.exceptions.RequestException as e:
             print(f"Ping at {time.ctime()}: Failed to reach {url}")
             print(e)
-        time.sleep(interval)
+        time.sleep(PING_INTERVAL)
 
+# Flask uygulaması başlatıldığında ping işlemini başlatmak
+@app.before_first_request
+def start_ping_on_app_start():
+    url = "https://asimai.onrender.com/"
+    threading.Thread(target=ping_site, args=(url,), daemon=True).start()
 
+# Anasayfa route'u
 @app.route('/')
 def index():
-    return render_template('index.html')
-
-
-@app.route('/start_ping', methods=['POST'])
-def start_ping():
-    url = "https://asimai.onrender.com/"
-    interval = int(request.form['interval'])
-    threading.Thread(target=ping_site, args=(url, interval)).start()
-
-    return f"Ping işlemi {interval} saniye aralıklarla başlatıldı!"
-
+    return "Ping işlemi 30 saniye aralıklarla başlatıldı!"
 
 if __name__ == '__main__':
     app.run(debug=True)
