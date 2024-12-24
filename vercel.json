@@ -9,12 +9,7 @@
   "routes": [
     {
       "src": "/(.*)",
-      "dest": "app.py"
-    }
-  ]
-  "cron": [
-    {
-      "schedule": "*/30 * * * *"
+      "dest": "/app.py"
     }
   ]
 }
